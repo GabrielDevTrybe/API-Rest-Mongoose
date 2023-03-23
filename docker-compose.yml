@@ -1,0 +1,32 @@
+version: '3'
+services:
+  frontend:
+    image: nginx
+    container_name: front-container_name
+    volumes:
+      - ./frontend/build:/usr/share/nginx/html
+    ports:
+      - 3000:3000
+    stdin_open: true
+    tty: true
+  backend:
+    image: node:18
+    container_name: back-container_name
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    ports:
+      - 3001:3001
+    command: bash -c "npm install && npm run dev"
+    restart: always
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/MeuBanco
+    
+  mongodb:
+    container_name : meu_banco_db
+    image: mongodb:5.0.7
+    restart: always
+    ports:
+     - 27017:27017
